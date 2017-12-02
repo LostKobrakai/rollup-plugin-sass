@@ -1,4 +1,4 @@
-import { dirname } from 'path'
+import { dirname, extname } from 'path'
 import { writeFileSync } from 'fs'
 import { renderSync } from 'node-sass'
 import { isString, isFunction } from 'util'
@@ -48,6 +48,16 @@ export default function plugin (options = {}) {
       sassConfig.includePaths = sassConfig.includePaths
             ? sassConfig.includePaths.concat(paths)
             : paths
+
+      // indentedSyntax is a boolean flag.
+      const ext = extname(id);
+
+      // If we are compiling sass and indentedSyntax isn't set, automatically set it.
+      if (ext && ext.toLowerCase() === ".sass" && "indentedSyntax" in sassConfig === false) {
+        sassConfig.indentedSyntax = true;
+      } else {
+        sassConfig.indentedSyntax = Boolean(sassConfig.indentedSyntax);
+      }
 
       try {
         let css = renderSync(sassConfig).css.toString()

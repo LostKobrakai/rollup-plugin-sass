@@ -68,8 +68,8 @@ function plugin() {
       dest = opts.dest || opts.entry;
     },
     transform: function () {
-      var _ref = _asyncToGenerator(_regeneratorRuntime.mark(function _callee(code, id) {
-        var paths, sassConfig, css, _code;
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee(code, id) {
+        var paths, sassConfig, ext, css, _code;
 
         return _regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -89,27 +89,38 @@ function plugin() {
 
                 sassConfig.includePaths = sassConfig.includePaths ? sassConfig.includePaths.concat(paths) : paths;
 
-                _context.prev = 5;
+                // indentedSyntax is a boolean flag.
+                ext = path.extname(id);
+
+                // If we are compiling sass and indentedSyntax isn't set, automatically set it.
+
+                if (ext && ext.toLowerCase() === ".sass" && "indentedSyntax" in sassConfig === false) {
+                  sassConfig.indentedSyntax = true;
+                } else {
+                  sassConfig.indentedSyntax = Boolean(sassConfig.indentedSyntax);
+                }
+
+                _context.prev = 7;
                 css = nodeSass.renderSync(sassConfig).css.toString();
                 _code = '';
 
                 if (!css.trim()) {
-                  _context.next = 16;
+                  _context.next = 18;
                   break;
                 }
 
                 if (!util.isFunction(options.processor)) {
-                  _context.next = 13;
+                  _context.next = 15;
                   break;
                 }
 
-                _context.next = 12;
+                _context.next = 14;
                 return options.processor(css, id);
 
-              case 12:
+              case 14:
                 css = _context.sent;
 
-              case 13:
+              case 15:
                 if (styleMaps[id]) {
                   styleMaps[id].content = css;
                 } else {
@@ -128,23 +139,23 @@ function plugin() {
                   _code = '"";';
                 }
 
-              case 16:
+              case 18:
                 return _context.abrupt('return', {
                   code: 'export default ' + _code + ';',
                   map: { mappings: '' }
                 });
 
-              case 19:
-                _context.prev = 19;
-                _context.t0 = _context['catch'](5);
+              case 21:
+                _context.prev = 21;
+                _context.t0 = _context['catch'](7);
                 throw _context.t0;
 
-              case 22:
+              case 24:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, this, [[5, 19]]);
+        }, _callee, this, [[7, 21]]);
       }));
 
       function transform(_x2, _x3) {
@@ -154,7 +165,7 @@ function plugin() {
       return transform;
     }(),
     ongenerate: function () {
-      var _ref2 = _asyncToGenerator(_regeneratorRuntime.mark(function _callee2(opts, result) {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee2(opts, result) {
         var css;
         return _regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
